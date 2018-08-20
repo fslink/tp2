@@ -7,7 +7,7 @@ function ctrlGetPost($method, $varName, $type){
 	$data = null;
 	$ctrlResult = false;
 	// Vérifie la méthode
-	if($method == 'GET'){
+	if($method == 'get'){
 		if (filter_has_var(INPUT_GET, $varName)){
 			// Affectation de varName
 			$data = $_GET[$varName];
@@ -17,7 +17,7 @@ function ctrlGetPost($method, $varName, $type){
 				//Enregistrement dans le fichier controle_input
 				$controle_input = fopen('./controle_input.php', 'a+');
 				//Sécurise les données et les insère
-				fputs($controle_input, htmlspecialchars($data) . "\n");
+				fputs($controle_input,date('l jS \of F Y h:i:s A') . ' : ' . htmlspecialchars($data) . "\n");
 				fclose($controle_input);
 				echo $varName . " a été ajouté";
 				$ctrlResult = true;
@@ -28,7 +28,7 @@ function ctrlGetPost($method, $varName, $type){
 			}
 		}
 
-	} elseif ($method == 'POST') {
+	} elseif ($method == 'post') {
 		if (filter_has_var(INPUT_POST, $varName)) {
 			// Affectation de varName
 			$data = $_POST[$varName];
@@ -37,7 +37,7 @@ function ctrlGetPost($method, $varName, $type){
 			if(ctrlType($data, $type)){
 				//Enregistrement dans le fichier controle_input
 				$controle_input = fopen('./controle_input.php', 'a+');
-				fputs($controle_input, htmlspecialchars($data) . "\n");
+				fputs($controle_input, date('l jS \of F Y h:i:s A') . ' : ' . htmlspecialchars($data) . "\n");
 				fclose($controle_input);
 				echo $varName . " a été ajouté";
 				$ctrlResult = true;	
@@ -93,7 +93,22 @@ function ctrlType($varCtrl, $type){
 	return $result;
 }
 
+if(isset($_GET['method_trans'])){
+	ctrlGetPost($_GET['method_trans'], 'client_name', 'STRING');
+	ctrlGetPost($_GET['method_trans'], 'client_html', 'HTML');
+	ctrlGetPost($_GET['method_trans'], 'client_age', 'INT');
+	ctrlGetPost($_GET['method_trans'], 'client_taille', 'FLOAT');
+	ctrlGetPost($_GET['method_trans'], 'client_genre', 'BOOL');
 
-ctrlGetPost('GET', 'name', 'HTML');
+} elseif(isset($_POST['method_trans'])) {
+	ctrlGetPost($_POST['method_trans'], 'client_name', 'STRING');
+	ctrlGetPost($_POST['method_trans'], 'client_html', 'HTML');
+	ctrlGetPost($_POST['method_trans'], 'client_age', 'INT');
+	ctrlGetPost($_POST['method_trans'], 'client_taille', 'FLOAT');
+	ctrlGetPost($_POST['method_trans'], 'client_genre', 'BOOL');
+
+} else {
+	echo "BIG ERROR FATAL FATAL!!!";
+}
 
  ?>
